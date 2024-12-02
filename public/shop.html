@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Peron Tips Limited</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/services.html">Services</a></li>
+        <li><a href="/shop.html">Shop</a></li>
+        <li><a href="/betting.html">Betting Predictions</a></li>
+        <li><a href="/quiz.html">Quiz</a></li>
+        <li><a href="/login.html">Login</a></li>
+        <li><a href="/signup.html">Sign Up</a></li>
+      </ul>
+    </nav>
+  </header>
 
+  <section id="shop">
+    <h1>Shop Our Products</h1>
+
+    <!-- Search Bar -->
+    <div id="search-container">
+      <input type="text" id="search-bar" placeholder="Search by product name or description..." oninput="filterProducts()">
+      <button type="button" id="search-btn" onclick="filterProducts()">Search</button>
+    </div>
+
+    <!-- Product List -->
+    <div id="product-list">
+      <div class="product" id="product-1">
+        <img src="path/to/image.jpg" alt="Product Image">
+        <h3>Product Name 1</h3>
+        <p>Description of product 1 goes here. It contains some key features of the product.</p>
+        <p><strong>Price:</strong> Ksh 1000</p>
+        <button>Add to Cart</button>
+      </div>
+      
+      <div class="product" id="product-2">
+        <img src="path/to/image.jpg" alt="Product Image">
+        <h3>Product Name 2</h3>
+        <p>Description of product 2 goes here. It contains some key features of the product.</p>
+        <p><strong>Price:</strong> Ksh 1500</p>
+        <button>Add to Cart</button>
+      </div>
+
+      <!-- More products here -->
+
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Peron Tips Limited. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Sample products data
+    const products = [
+      { id: 1, name: 'Product Name 1', description: 'Description of product 1 goes here. It contains some key features of the product.', price: 1000, image: 'path/to/image.jpg' },
+      { id: 2, name: 'Product Name 2', description: 'Description of product 2 goes here. It contains some key features of the product.', price: 1500, image: 'path/to/image.jpg' },
+      { id: 3, name: 'Product Name 3', description: 'Description of product 3 goes here. It contains some key features of the product.', price: 2000, image: 'path/to/image.jpg' },
+      // Add more products here
+    ];
+
+    // Function to display products
+    function displayProducts(filteredProducts) {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = ''; // Clear existing products
+      filteredProducts.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('product');
+        productElement.innerHTML = `
+          <img src="${product.image}" alt="Product Image">
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p><strong>Price:</strong> Ksh ${product.price}</p>
+          <button>Add to Cart</button>
+        `;
+        productList.appendChild(productElement);
+      });
+    }
+
+    // Function to filter products based on search input
+    function filterProducts() {
+      const query = document.getElementById('search-bar').value.toLowerCase();
+      const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(query) || 
+        product.description.toLowerCase().includes(query)
+      );
+      displayProducts(filteredProducts);
+    }
+
+    // Initialize the shop with all products
+    displayProducts(products);
+  </script>
+</body>
+</html>
