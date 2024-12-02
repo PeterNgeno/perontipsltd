@@ -1,113 +1,71 @@
-const { db } = require('../firebase'); // Import Firebase Firestore instance
+const express = require('express');
+const quizController = require('../controllers/quizController');
+const paymentController = require('../controllers/paymentController');
+const authMiddleware = require('../middleware/authMiddleware');
+const { db } = require('../firebase');  // Import Firebase Firestore instance
 
-// Start Quiz: Fetch the section's quiz and timer duration based on payment
-exports.startQuiz = async (req, res) => {
-  const { section, payment } = req.body;
+const router = express.Router();
 
-  try {
-    const timer = getTimerDuration(payment);
+// Route to get the quiz page
+router.get('/', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id; // Get user ID from authentication middleware
 
-    // Fetch quiz from Firestore
-    const quizDoc = await db.collection('quizzes').doc(section).get();
-
-    if (!quizDoc.exists) {
-      return res.status(404).json({ error: `No quiz found for section ${section}` });
+        // Fetch quiz details from Firestore
+        const quiz = await quizController.getQuizPage(userId);
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+        res.status(200).json(quiz);
+    } catch (error) {
+        console.error('Error fetching quiz page:', error);
+        res.status(500).json({ error: 'Failed to load quiz page' });
     }
+});
 
-    const quiz = quizDoc.data();
-    const questions = quiz.questions; // Assuming questions are an array in Firestore
+// Route to submit the quiz
+router.post('/submit', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id; // Get user ID from authentication middleware
+        const { answers } = req.body; // Get the submitted answers
 
-    res.json({
-      message: `Starting section ${section} with ${timer} seconds`,
-      quiz: questions,
-      timer,
-    });
-  } catch (error) {
-    console.error('Error starting quiz:', error);
-    res.status(500).json({ error: 'Failed to start quiz' });
-  }
-};
+        // Process the quiz submission
+        const result = await quizController.submitQuiz(userId, answers);
+        if (!result) {
+            return res.status(400).json({ error: 'Error submitting quiz' });
+        }
 
-// Submit Quiz: Validate answers and return the result
-exports.submitQuiz = async (req, res) => {
-  const { answers, section } = req.body;
-  const userId = req.user.id;
-
-  try {
-    // Fetch quiz from Firestore
-    const quizDoc = await db.collection('quizzes').doc(section).get();
-
-    if (!quizDoc.exists) {
-      return res.status(404).json({ error: `No quiz found for section ${section}` });
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error submitting quiz:', error);
+        res.status(500).json({ error: 'Failed to submit quiz' });
     }
+});
 
-    const quiz = quizDoc.data();
-    const questions = quiz.questions;
+// Route to process payment for quiz access
+router.post('/pay', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id; // Get user ID from authentication middleware
 
-    const score = checkAnswers(answers, questions); // Check answers against correct questions
+        // Check if the user has already paid using Firestore
+        const paymentStatus = await paymentController.checkPaymentStatus(userId);
+        if (paymentStatus.hasPaid) {
+            return res.status(400).json({ error: 'You have already paid for the quiz' });
+        }
 
-    // Fetch user data
-    const userDoc = await db.collection('users').doc(userId).get();
-
-    if (!userDoc.exists) {
-      return res.status(404).json({ error: 'User not found' });
+        // Process the payment (Assuming you have implemented payment logic like Mpesa or other payment systems)
+        const paymentResult = await paymentController.processPayment(userId);
+        if (paymentResult.success) {
+            // Update the user's payment status in Firestore
+            await paymentController.updatePaymentStatus(userId, true);
+            res.status(200).json({ message: 'Payment processed successfully', paymentResult });
+        } else {
+            res.status(400).json({ error: 'Payment failed, please try again' });
+        }
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        res.status(500).json({ error: 'Payment failed' });
     }
+});
 
-    const user = userDoc.data();
-    const updatedScore = user.score + score;
-    const updatedSectionProgress = user.sectionProgress || {};
-    updatedSectionProgress[section] = score;
-
-    // Update the user data in Firestore
-    await db.collection('users').doc(userId).update({
-      score: updatedScore,
-      sectionProgress: updatedSectionProgress,
-    });
-
-    if (score === questions.length) {
-      res.json({
-        success: true,
-        message: 'You passed! Proceed to the next section.',
-        score,
-      });
-    } else {
-      res.json({
-        success: false,
-        message: 'You failed. Please pay to retry.',
-        score,
-      });
-    }
-  } catch (error) {
-    console.error('Error submitting quiz:', error);
-    res.status(500).json({ error: 'Failed to submit quiz' });
-  }
-};
-
-// Helper function to check answers against correct ones
-function checkAnswers(submittedAnswers, correctQuestions) {
-  let score = 0;
-
-  submittedAnswers.forEach((answer, index) => {
-    if (answer.toLowerCase() === correctQuestions[index].correctAnswer.toLowerCase()) {
-      score++;
-    }
-  });
-
-  return score;
-}
-
-// Helper function to determine timer duration based on payment
-function getTimerDuration(payment) {
-  switch (payment) {
-    case '50':
-      return 30;
-    case '100':
-      return 45;
-    case '200':
-      return 50;
-    case '400':
-      return 65;
-    default:
-      return 30;
-  }
-    }
+module.exports = router;
