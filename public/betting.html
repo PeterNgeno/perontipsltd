@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Betting Predictions</title>
+  <style>
+    /* Styling for the predictions table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #28a745; /* Green background */
+      color: white;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #218838; /* Darker green for header */
+    }
+  </style>
+  <script>
+    // Fetch the betting predictions after successful payment
+    function fetchPredictions() {
+      fetch('/betting/predictions')
+        .then(response => response.json())
+        .then(data => {
+          const predictionsContainer = document.getElementById('predictions');
+          
+          // Create the table structure
+          const table = document.createElement('table');
+          const thead = document.createElement('thead');
+          const headerRow = document.createElement('tr');
+          
+          // Table headers
+          const headers = ['Game', 'Prediction', 'Odds'];
+          headers.forEach(headerText => {
+            const th = document.createElement('th');
+            th.textContent = headerText;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
+          
+          // Table body
+          const tbody = document.createElement('tbody');
+          data.predictions.forEach((prediction) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${prediction.game}</td>
+              <td>${prediction.prediction}</td>
+              <td>${prediction.odds}</td>
+            `;
+            tbody.appendChild(row);
+          });
+          table.appendChild(tbody);
+          predictionsContainer.appendChild(table);
+        })
+        .catch(error => console.error('Error loading predictions:', error));
+    }
+
+    // Function to handle payment
+    function makePayment() {
+      const paymentAmount = 20; // Ksh 20 payment for accessing predictions
+
+      // Simulate payment processing
+      fetch('/betting/predictions/payment', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: 1, // Example user ID
+          amount: paymentAmount
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Payment successful! Now you can view the predictions.');
+          fetchPredictions(); // Show predictions after payment
+        } else {
+          alert('Payment failed. Please try again.');
+        }
+      })
+      .catch(error => console.error('Error during payment:', error));
+    }
+  </script>
+</head>
+<body>
+  <h1>Betting Predictions</h1>
+  <button onclick="makePayment()">Pay Ksh 20 to View Predictions</button>
+  <div id="predictions"></div>
+</body>
+</html>
