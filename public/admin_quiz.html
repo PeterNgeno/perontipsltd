@@ -1,0 +1,112 @@
+<!-- admin_quiz.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Update Quiz</title>
+</head>
+<body>
+  <header>
+    <h1>Admin - Update Quiz</h1>
+  </header>
+  
+  <form action="/admin/quiz" method="POST">
+    <label for="section">Select Quiz Section:</label>
+    <select name="section" id="section">
+      <option value="A">Section A</option>
+      <option value="B">Section B</option>
+      <option value="C">Section C</option>
+      <option value="D">Section D</option>
+      <option value="E">Section E</option>
+      <option value="F">Section F</option>
+      <option value="G">Section G</option>
+      <option value="H">Section H</option>
+      <option value="I">Section I</option>
+      <option value="J">Section J</option>
+    </select>
+
+    <div id="questions">
+      <h3>Enter Questions and Answers</h3>
+
+      <!-- Loop for creating 10 questions (placeholders for admin) -->
+      <div class="question-container">
+        <label for="q1">Question 1:</label>
+        <input type="text" id="q1" name="questions[0][question]" placeholder="Enter Question 1" required>
+        <label for="q1a">Answer 1:</label>
+        <input type="text" id="q1a" name="questions[0][answer]" placeholder="Enter Answer 1" required>
+      </div>
+
+      <!-- Repeat the above block for questions 2 to 10 -->
+      <div class="question-container">
+        <label for="q2">Question 2:</label>
+        <input type="text" id="q2" name="questions[1][question]" placeholder="Enter Question 2" required>
+        <label for="q2a">Answer 2:</label>
+        <input type="text" id="q2a" name="questions[1][answer]" placeholder="Enter Answer 2" required>
+      </div>
+
+      <div class="question-container">
+        <label for="q3">Question 3:</label>
+        <input type="text" id="q3" name="questions[2][question]" placeholder="Enter Question 3" required>
+        <label for="q3a">Answer 3:</label>
+        <input type="text" id="q3a" name="questions[2][answer]" placeholder="Enter Answer 3" required>
+      </div>
+
+<div class="question-container">
+        <label for="q4">Question 4:</label>
+        <input type="text" id="q4" name="questions[3][question]" placeholder="Enter Question 3" required>
+        <label for="q4a">Answer 4:</label>
+        <input type="text" id="q4a" name="questions[3][answer]" placeholder="Enter Answer 4" required>
+      </div>
+
+<div class="question-container">
+        <label for="q5">Question 5:</label>
+        <input type="text" id="q5" name="questions[4][question]" placeholder="Enter Question 5" required>
+        <label for="q5a">Answer 5:</label>
+        <input type="text" id="q5a" name="questions[4][answer]" placeholder="Enter Answer 5" required>
+      </div>
+
+<div class="question-container">
+        <label for="q6">Question 6:</label>
+        <input type="text" id="q6" name="questions[5][question]" placeholder="Enter Question 3" required>
+        <label for="q6a">Answer 6:</label>
+        <input type="text" id="q6a" name="questions[5][answer]" placeholder="Enter Answer 6" required>
+      </div>
+
+<div class="question-container">
+        <label for="q7">Question 7:</label>
+        <input type="text" id="q7" name="questions[6][question]" placeholder="Enter Question 7" required>
+        <label for="q7a">Answer 7:</label>
+        <input type="text" id="q7a" name="questions[6][answer]" placeholder="Enter Answer 7" required>
+      </div>
+
+<div class="question-container">
+        <label for="q8">Question 8:</label>
+        <input type="text" id="q8" name="questions[7][question]" placeholder="Enter Question 8" required>
+        <label for="q8a">Answer 8:</label>
+        <input type="text" id="q8a" name="questions[7][answer]" placeholder="Enter Answer 8" required>
+      </div>
+
+<div class="question-container">
+        <label for="q9">Question 9:</label>
+        <input type="text" id="q9" name="questions[8][question]" placeholder="Enter Question 9" required>
+        <label for="q9a">Answer 9:</label>
+        <input type="text" id="q9a" name="questions[8][answer]" placeholder="Enter Answer 9" required>
+      </div>
+
+<div class="question-container">
+        <label for="q10">Question 10:</label>
+        <input type="text" id="q10" name="questions[9][question]" placeholder="Enter Question 10" required>
+        <label for="q10a">Answer 10:</label>
+        <input type="text" id="q10a" name="questions[9][answer]" placeholder="Enter Answer 10" required>
+      </div>
+
+
+      <!-- Repeat this for 10 questions -->
+      <!-- Add similar blocks for Question 4, 5, ..., 10 -->
+
+      <button type="submit">Save Quiz</button>
+    </div>
+  </form>
+</body>
+          </html>
