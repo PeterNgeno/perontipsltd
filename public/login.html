@@ -1,1 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Log In - Peron Tips Limited</title>
+</head>
+<body>
+  <header>
+    <h1>Log In to Peron Tips Limited</h1>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Enter your email" required><br>
+      <input type="password" id="password" placeholder="Enter your password" required><br>
+      <button type="submit">Log In</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+  </header>
 
+  <script>
+    // Handle login form submission
+    document.getElementById('login-form').onsubmit = function(e) {
+      e.preventDefault();
+      // Handle login logic here (e.g., authenticate user)
+      window.location.href = 'services.html';  // Redirect to services page
+    }
+  </script>
+</body>
+</html>
