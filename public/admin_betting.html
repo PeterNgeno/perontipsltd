@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Update Betting Predictions</title>
+  <style>
+    /* Green table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    /* Green border for table */
+    table, th, td {
+      border: 2px solid #4CAF50;
+    }
+
+    /* Light green background for the table */
+    table {
+      background-color: #eafaf1;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    td {
+      background-color: #ffffff;
+      padding: 10px;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background-color: #d4f4db;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+
+    tr:hover {
+      background-color: #c6f7d0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin - Update Betting Predictions</h1>
+  </header>
+
+  <form action="/admin/betting" method="POST">
+    <h3>Enter Betting Predictions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Prediction 1</th>
+          <th>Prediction 2</th>
+          <th>Prediction 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Repeat rows for all 20 predictions -->
+        <tr>
+       <td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 1" required></td>
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 2" required></td>
+          <td><input type="text" name="predictions[0][p3]" placeholder="Enter Prediction 3" required></td>
+<\tr>
+<tr>
+<td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 4" required></td>
+
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 5" required></td>
+          <td><input type="text" name="predictions[0][p3]" placeholder="Enter Prediction 6" required></td>
+<\tr>
+<tr>
+<td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 7" required></td>
+
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 8" required></td>
+          <td><input type="text" name="predictions[0][p3]" placeholder="Enter Prediction 9" required></td>
+<tr>
+<td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 10" required></td>
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 11" required></td>
+          <td><input type="text" name="predictions[0][p3]" placeholder="Enter Prediction 12" required></td>
+          <\tr>
+          <tr>
+<td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 13" required></td>
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 14" required></td>
+          <td><input type="text" name="predictions[0][p3]" placeholder="Enter Prediction 15" required></td>
+          <\tr>
+          <tr>
+<td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 16" required></td>
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 17" required></td>
+          <td><input type="text" name="predictions[0][p3]" placeholder="Enter Prediction 18" required></td>
+               <\t>
+          <tr>
+     
+<td><input type="text" name="predictions[0][p1]" placeholder="Enter Prediction 19" required></td>
+          <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 20" required></td>
+           <td><input type="text" name="predictions[0][p2]" placeholder="Enter Prediction 11" required></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <button type="submit">Save Betting Predictions</button>
+  </form>
+</body>
+  </html>
