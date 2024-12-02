@@ -2,6 +2,7 @@ const express = require('express');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { logAnalyticsData } = require('./analytics');  // Import the analytics logger
 require('dotenv').config();
 
 const app = express();
@@ -32,9 +33,28 @@ app.use('/api/quiz', quizRoutes);
 app.use('/api/betting', bettingRoutes);
 app.use('/api/payments', paymentRoutes);
 
+// Analytics Logging Middleware (for page views or other actions)
+app.use(async (req, res, next) => {
+  const path = req.path;
+  // Log page view or any other relevant analytics
+  await logAnalyticsData(path);
+
+  next();  // Proceed to the next middleware or route
+});
+
 // Default Route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to PeronTipsLimited API' });
+});
+
+// Example route to log quiz attempts
+app.post('/api/quiz/attempt', async (req, res) => {
+  const { userId, section, score, passed } = req.body;
+
+  // Log quiz attempt to Firestore and analytics
+  await logAnalyticsData(section, userId, section, score, passed);
+
+  res.json({ message: 'Quiz attempt logged successfully', score });
 });
 
 // Error Handling Middleware
