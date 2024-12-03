@@ -13,10 +13,10 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 // Initialize Firebase
-const serviceAccount = require('./firebase-service-account.json'); // Your Firebase Admin SDK key
+const serviceAccount = require('./service-account.json'); // Your Firebase Admin SDK key (updated path)
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://<your-database-name>.firebaseio.com', // Replace with your Firebase database URL
+  databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com', // Updated with your Firebase database URL
 });
 
 const db = admin.firestore();
