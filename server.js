@@ -2,7 +2,7 @@ const express = require('express');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { logAnalyticsData } = require('./analytics');  // Import the analytics logger
+const { logAnalyticsData } = require('./analytics');
 require('dotenv').config();
 
 const app = express();
@@ -12,20 +12,22 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 
-// Initialize Firebase
-const serviceAccount = require('./service-account.json'); // Your Firebase Admin SDK key (updated path)
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com', // Updated with your Firebase database URL
-});
+// Firebase Initialization
+const serviceAccount = require('./service-account.json');
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com',
+  });
+}
 
 const db = admin.firestore();
 
 // Import Routes
-const productRoutes = require('./routes/productRoutes')(db); // Pass Firestore db
-const quizRoutes = require('./routes/quizRoutes')(db);       // Pass Firestore db
-const bettingRoutes = require('./routes/bettingRoutes')(db); // Pass Firestore db
-const paymentRoutes = require('./routes/paymentRoutes')(db); // Pass Firestore db
+const productRoutes = require('./routes/productRoutes')(db);
+const quizRoutes = require('./routes/quizRoutes')(db);
+const bettingRoutes = require('./routes/bettingRoutes')(db);
+const paymentRoutes = require('./routes/paymentRoutes')(db);
 
 // Use Routes
 app.use('/api/products', productRoutes);
@@ -33,13 +35,11 @@ app.use('/api/quiz', quizRoutes);
 app.use('/api/betting', bettingRoutes);
 app.use('/api/payments', paymentRoutes);
 
-// Analytics Logging Middleware (for page views or other actions)
+// Analytics Logging Middleware
 app.use(async (req, res, next) => {
   const path = req.path;
-  // Log page view or any other relevant analytics
   await logAnalyticsData(path);
-
-  next();  // Proceed to the next middleware or route
+  next();
 });
 
 // Default Route
@@ -47,13 +47,10 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to PeronTipsLimited API' });
 });
 
-// Example route to log quiz attempts
+// Example Route to Log Quiz Attempts
 app.post('/api/quiz/attempt', async (req, res) => {
   const { userId, section, score, passed } = req.body;
-
-  // Log quiz attempt to Firestore and analytics
   await logAnalyticsData(section, userId, section, score, passed);
-
   res.json({ message: 'Quiz attempt logged successfully', score });
 });
 
