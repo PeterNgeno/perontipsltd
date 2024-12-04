@@ -1,7 +1,7 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const { logAnalyticsData } = require('./analytics');
+const { logQuizAttempt } = require('./analytics'); // Updated to use the correct function
 require('dotenv').config();
 
 const app = express();
@@ -42,7 +42,7 @@ app.use('/api/payments', paymentRoutes(db));
 app.use(async (req, res, next) => {
   try {
     const path = req.path;
-    await logAnalyticsData(path);
+    await logQuizAttempt(path); // Correcting this to use the appropriate logging function
     next();
   } catch (error) {
     console.error('Error logging analytics data:', error);
@@ -59,7 +59,7 @@ app.get('/', (req, res) => {
 app.post('/api/quiz/attempt', async (req, res) => {
   try {
     const { userId, section, score, passed } = req.body;
-    await logAnalyticsData(section, userId, section, score, passed);
+    await logQuizAttempt(userId, section, score, passed); // Correctly logging quiz attempt
     res.json({ message: 'Quiz attempt logged successfully', score });
   } catch (error) {
     console.error('Error logging quiz attempt:', error);
