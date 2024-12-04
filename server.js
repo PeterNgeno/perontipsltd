@@ -1,7 +1,7 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const { logQuizAttempt } = require('./analytics'); // Updated to use the correct function
+const { logQuizAttempt } = require('./middleware/analytics');
 require('dotenv').config();
 
 const app = express();
@@ -13,13 +13,12 @@ app.use(express.json()); // Parses incoming requests with JSON payloads
 // Firebase Initialization
 try {
   const serviceAccount = require('./service-account.json');
+  // Check if Firebase has already been initialized before initializing
   if (!admin.apps.length) {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com',
     });
-  } else {
-    admin.app(); // Use the already initialized app
   }
 } catch (error) {
   console.error('Firebase initialization error:', error);
