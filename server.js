@@ -18,6 +18,8 @@ try {
       credential: admin.credential.cert(serviceAccount),
       databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com',
     });
+  } else {
+    admin.app(); // Use the already initialized app
   }
 } catch (error) {
   console.error('Firebase initialization error:', error);
