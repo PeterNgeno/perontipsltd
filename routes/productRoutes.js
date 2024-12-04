@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../firebase'); // Import Firestore instance
+
+// Firestore instance from the initialized Firebase Admin in server.js
+let db;
+if (!db) {
+    const admin = require('firebase-admin');
+    db = admin.firestore();
+}
 
 // Route to get all products
 router.get('/', async (req, res) => {
