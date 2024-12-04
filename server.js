@@ -13,12 +13,18 @@ app.use(express.json()); // Parses incoming requests with JSON payloads
 // Firebase Initialization
 try {
   const serviceAccount = require('./service-account.json');
-  // Check if Firebase has already been initialized before initializing
+  // If Firebase has already been initialized, use a unique app name
   if (!admin.apps.length) {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com',
     });
+  } else {
+    // Optional: you can initialize multiple apps with unique names if needed
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com',
+    }, 'app2');  // Initialize as a second app with a unique name ('app2')
   }
 } catch (error) {
   console.error('Firebase initialization error:', error);
