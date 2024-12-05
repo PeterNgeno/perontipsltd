@@ -1,18 +1,18 @@
 const admin = require('firebase-admin');
 
 // Load the Firebase service account key
-const serviceAccount = require('./service-account.json'); // Adjust the path if the file is in a different location
+const serviceAccount = require('./service-account.json'); // Ensure this path is correct
 
-// Initialize Firebase Admin SDK
+// Initialize Firebase Admin SDK only if not already initialized
 if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com', // Replace with your Firebase database URL
-    });
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://perontipsltd-default-rtdb.firebaseio.com',
+  });
 }
 
 // Initialize Firestore
 const db = admin.firestore();
 
-// Export the Firestore instance
-module.exports = { db };
+// Export Firebase Admin and Firestore instance
+module.exports = { admin, db };
