@@ -1,71 +1,50 @@
-const express = require('express');
-const quizController = require('../controllers/quizController');
-const paymentController = require('../controllers/paymentController');
-const authMiddleware = require('../middleware/authMiddleware');
-const { db } = require('../firebase');  // Import Firebase Firestore instance
+module.exports = (db, quizController, paymentController, authMiddleware) => {
+  const router = require('express').Router();
 
-const router = express.Router();
+  router.get('/', authMiddleware, async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized access' });
 
-// Route to get the quiz page
-router.get('/', authMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id; // Get user ID from authentication middleware
-
-        // Fetch quiz details from Firestore
-        const quiz = await quizController.getQuizPage(userId);
-        if (!quiz) {
-            return res.status(404).json({ error: 'Quiz not found' });
-        }
-        res.status(200).json(quiz);
+      const quiz = await quizController.getQuizPage(userId);
+      if (!quiz) return res.status(404).json({ error: 'Quiz not found' });
+      res.status(200).json(quiz);
     } catch (error) {
-        console.error('Error fetching quiz page:', error);
-        res.status(500).json({ error: 'Failed to load quiz page' });
+      console.error('Error fetching quiz:', error.message);
+      res.status(500).json({ error: 'Error fetching quiz' });
     }
-});
+  });
 
-// Route to submit the quiz
-router.post('/submit', authMiddleware, async (req, res) => {
+  router.post('/submit', authMiddleware, async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized access' });
+
     try {
-        const userId = req.user.id; // Get user ID from authentication middleware
-        const { answers } = req.body; // Get the submitted answers
-
-        // Process the quiz submission
-        const result = await quizController.submitQuiz(userId, answers);
-        if (!result) {
-            return res.status(400).json({ error: 'Error submitting quiz' });
-        }
-
-        res.status(200).json(result);
+      const result = await quizController.submitQuiz(userId, req.body.answers);
+      res.status(200).json(result);
     } catch (error) {
-        console.error('Error submitting quiz:', error);
-        res.status(500).json({ error: 'Failed to submit quiz' });
+      console.error('Error submitting quiz:', error.message);
+      res.status(500).json({ error: 'Error submitting quiz' });
     }
-});
+  });
 
-// Route to process payment for quiz access
-router.post('/pay', authMiddleware, async (req, res) => {
+  router.post('/pay', authMiddleware, async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized access' });
+
     try {
-        const userId = req.user.id; // Get user ID from authentication middleware
-
-        // Check if the user has already paid using Firestore
-        const paymentStatus = await paymentController.checkPaymentStatus(userId);
-        if (paymentStatus.hasPaid) {
-            return res.status(400).json({ error: 'You have already paid for the quiz' });
-        }
-
-        // Process the payment (Assuming you have implemented payment logic like Mpesa or other payment systems)
-        const paymentResult = await paymentController.processPayment(userId);
-        if (paymentResult.success) {
-            // Update the user's payment status in Firestore
-            await paymentController.updatePaymentStatus(userId, true);
-            res.status(200).json({ message: 'Payment processed successfully', paymentResult });
-        } else {
-            res.status(400).json({ error: 'Payment failed, please try again' });
-        }
+      const paymentResult = await paymentController.processPayment(userId, 20);
+      if (paymentResult.success) {
+        await db.collection('users').doc(userId).set({ hasPaid: true }, { merge: true });
+        res.status(200).json({ message: 'Payment successful' });
+      } else {
+        res.status(400).json({ error: 'Payment failed' });
+      }
     } catch (error) {
-        console.error('Error processing payment:', error);
-        res.status(500).json({ error: 'Payment failed' });
+      console.error('Error processing payment:', error.message);
+      res.status(500).json({ error: 'Payment failed' });
     }
-});
+  });
 
-module.exports = router;
+  return router;
+};
