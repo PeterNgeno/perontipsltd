@@ -1,30 +1,22 @@
-const { db } = require('../firebase'); // Firebase Firestore instance
-const mpesa = require('../models/Payment'); // Assuming you have a helper for Mpesa STK push
+module.exports = (db, mpesa) => ({
+  processPayment: async (userId, amount) => {
+    try {
+      // Process payment via Mpesa
+      const result = await mpesa.stkPush(userId, amount);
 
-// Process payment
-exports.processPayment = async (req, res) => {
-  const { userId, amount, section } = req.body;
+      // Insert payment record into Firestore
+      const paymentData = {
+        userId,
+        amount,
+        status: result.status,
+        paymentDate: new Date().toISOString(),
+      };
 
-  try {
-    // Process payment via Mpesa
-    const result = await mpesa.stkPush(userId, amount); // Assuming stkPush returns a promise
-
-    // Insert payment record into Firestore
-    const paymentRef = db.collection('payments').doc(); // Create a new document in 'payments' collection
-    const paymentData = {
-      userId,
-      amount,
-      section,
-      status: result.status,
-      paymentDate: new Date().toISOString(), // Store payment date in ISO format
-    };
-
-    await paymentRef.set(paymentData); // Save payment data to Firestore
-
-    // Return success response
-    res.json({ success: true, message: 'Payment successful!' });
-  } catch (err) {
-    console.error('Payment processing failed:', err);
-    res.status(500).json({ error: 'Payment failed' });
-  }
-};
+      await db.collection('payments').add(paymentData);
+      return { success: true, result };
+    } catch (err) {
+      console.error('Error processing payment:', err.message);
+      return { success: false, error: err.message };
+    }
+  },
+});
