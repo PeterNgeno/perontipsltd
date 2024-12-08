@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json());  // Express now handles JSON parsing directly
 
 // Import Routes
 const productRoutes = require('./routes/productRoutes');
