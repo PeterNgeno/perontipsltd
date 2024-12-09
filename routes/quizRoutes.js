@@ -1,6 +1,9 @@
-module.exports = (db, quizController, paymentController, authMiddleware) => {
-  const router = require('express').Router();
+const express = require('express');
 
+module.exports = (db, quizController, paymentController, authMiddleware) => {
+  const router = express.Router();
+
+  // Fetch Quiz
   router.get('/', authMiddleware, async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: 'Unauthorized access' });
@@ -15,6 +18,7 @@ module.exports = (db, quizController, paymentController, authMiddleware) => {
     }
   });
 
+  // Submit Quiz
   router.post('/submit', authMiddleware, async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: 'Unauthorized access' });
@@ -28,6 +32,7 @@ module.exports = (db, quizController, paymentController, authMiddleware) => {
     }
   });
 
+  // Make Payment
   router.post('/pay', authMiddleware, async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: 'Unauthorized access' });
