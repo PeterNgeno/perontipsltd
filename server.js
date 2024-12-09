@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const { db, admin } = require('./firebase'); // Import from firebase.js
 const { logQuizAttempt } = require('./middleware/analytics');
+const quizController = require('./controllers/quizController'); // Import the controller
+const paymentController = require('./controllers/paymentController'); // Import the controller
+const authMiddleware = require('./middleware/authMiddleware'); // Import auth middleware
 require('dotenv').config();
 
 const app = express();
@@ -18,7 +21,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 // Use Routes
 app.use('/api/products', productRoutes(db));
-app.use('/api/quiz', quizRoutes(db));
+app.use('/api/quiz', quizRoutes(db, quizController, paymentController, authMiddleware));
 app.use('/api/betting', bettingRoutes(db));
 app.use('/api/payments', paymentRoutes(db));
 
